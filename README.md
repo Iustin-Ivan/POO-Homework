@@ -1,6 +1,5 @@
-# tema-2-Iustin-Ivan
+# tema-2-Iustin-Ivan 323CB
 tema-2-Iustin-Ivan created by GitHub Classroom
-323CB
 Colectia aleasa de mine a fost ArrayList pentru a putea stoca dinamic numarul de utilizatori functionari, cat si cererile acestora
 In implementare am facut clasa Utilizator abstracta pentru a putea permine celorlalte tipuri de utilizatori sa mosteneasca anumite
 metode pe care sa le implementeze in diferite feluri cum ar fi toString
