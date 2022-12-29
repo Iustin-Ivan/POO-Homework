@@ -20,8 +20,22 @@ public class Pensionar extends Utilizator{
     }
 
     @Override
-    public String scrieCerere(Cereri cerere) {
-        return null;
+    public String scrieCerere(Cereri cerere) throws CerereInvalidaException {
+        if (cerere == Cereri.inlocuire_buletin || cerere == Cereri.inlocuire_carnet_de_sofer
+        || cerere == Cereri.inregistrare_cupoane_de_pensie) {
+            String text = "Subsemnatul " + this.getNume() + ", va rog " + "sa-mi aprobati urmatoarea solicitare:";
+            String tip = cerere.toString();
+            String[] cuvinte = tip.split("_");
+            int i = 0;
+            while (i < cuvinte.length) {
+                text += " ";
+                text += cuvinte[i];
+                i++;
+            }
+            return text;
+        } else {
+            throw new CerereInvalidaException();
+        }
     }
     public ArrayList<CerereCompleta> getCereriAsteptare() {
         return cereriAsteptare;
@@ -29,5 +43,9 @@ public class Pensionar extends Utilizator{
 
     public void setCereriAsteptare(ArrayList<CerereCompleta> cereriAsteptare) {
         this.cereriAsteptare = cereriAsteptare;
+    }
+
+    public String getReprezentant() {
+        return "";
     }
 }

@@ -31,8 +31,22 @@ public class EntitateJuridica extends Utilizator{
     }
 
     @Override
-    public String scrieCerere(Cereri cerere) {
-        return null;
+    public String scrieCerere(Cereri cerere) throws CerereInvalidaException {
+        if (cerere == Cereri.creare_act_constitutiv || cerere == Cereri.reinnoire_autorizatie) {
+            String text = "Subsemnatul " + this.getNume() + ", reprezentant legal al companiei " +
+                    this.getReprezentant() + ", va rog " + "sa-mi aprobati urmatoarea solicitare:";
+            String tip = cerere.toString();
+            String[] cuvinte = tip.split("_");
+            int i = 0;
+            while (i < cuvinte.length) {
+                text += " ";
+                text += cuvinte[i];
+                i++;
+            }
+            return text;
+        } else {
+            throw new CerereInvalidaException();
+        }
     }
 
     public ArrayList<CerereCompleta> getCereriAsteptare() {

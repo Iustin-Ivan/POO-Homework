@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 
 public class MetodeAjutatoare {
     public static Utilizator.Cereri tipCerere(String cerere) {
@@ -46,17 +47,20 @@ public class MetodeAjutatoare {
         return success;
     }
 
-    public static File createFile(String nume) {
+    public static File createFile(String nume) throws IOException {
         File fisier = new File(nume);
+        if (nume.contains("output")) {
+            fisier.createNewFile();
+        }
         return fisier;
     }
 
-    public static void adaugaCerere(ArrayList<Utilizator> utilizatori, String[] cuvinte, File fisierIesire) throws CerereInvalidaException, ParseException {
+    public static void adaugaCerere(ArrayList<Utilizator> utilizatori, String[] cuvinte, File fisierIesire) {
         String nume = cuvinte[1].substring(1);
         String cererea = cuvinte[2].substring(1);
         String tipUtilizator = "";
         for (Utilizator util : utilizatori) {
-            if (util.getNume().equals(nume)) {
+            if (util.getNume().equals(nume) || util.getReprezentant().equals(nume)) {
                 tipUtilizator = util.gasesteTipUtilizator();
                 try {
                     Utilizator.Cereri a = MetodeAjutatoare.tipCerere(cererea);
@@ -72,6 +76,9 @@ public class MetodeAjutatoare {
                     String mesajAfisat = "Utilizatorul de tip " + tipUtilizator +
                             " nu poate inainta o cerere de tip " + cererea + "\n";
                     scrieInFisier(fisierIesire, mesajAfisat);
+                    //System.out.println(mesajAfisat);
+                } catch (ParseException e) {
+                    System.out.println("Couldn't parse Date");
                 }
             }
         }
@@ -79,11 +86,17 @@ public class MetodeAjutatoare {
 
     public static void afiseazaCereriAsteptare(ArrayList<Utilizator> utilizatori, String nume, File fisierIesire) {
         for(Utilizator util : utilizatori) {
-            if(util.getNume().equals(nume)) {
+            if(util.getNume().equals(nume) || util.getReprezentant().equals(nume)) {
                 ArrayList<CerereCompleta> cererile;
                 cererile = util.getCereriAsteptare();
                 Collections.sort(cererile);
-                String continut = util.getNume()+" - "+"cereri in asteptare:\n";
+                String continut;
+                if (util.gasesteTipUtilizator().equals("entitate juridica")) {
+                    continut = util.getReprezentant() + " - " + "cereri in asteptare:\n";
+                } else {
+                    continut = util.getNume() + " - " + "cereri in asteptare:\n";
+                }
+
                 for (int i = 0; i < cererile.size(); i++) {
                     continut += cererile.get(i).toString()+"\n";
                 }
@@ -93,26 +106,53 @@ public class MetodeAjutatoare {
     }
 
     public static void adaugaUtilizator(ArrayList<Utilizator> utilizatori, String[] cuvinte) {
-        String nume = cuvinte[2].substring(1);
         String tip = cuvinte[1].substring(1);
         if (tip.equals("angajat")) {
+            String nume = cuvinte[2].substring(1);
             String chestie = cuvinte[3].substring(1);
             Angajat a = new Angajat(nume, chestie);
             utilizatori.add(a);
         } else if (tip.equals("elev")) {
+            String nume = cuvinte[2].substring(1);
             String chestie = cuvinte[3].substring(1);
             Elev e = new Elev(nume, chestie);
             utilizatori.add(e);
         } else if (tip.equals("pensionar")) {
+            String nume = cuvinte[2].substring(1);
             Pensionar p = new Pensionar(nume);
             utilizatori.add(p);
         } else if (tip.equals("persoana")) {
+            String nume = cuvinte[2].substring(1);
             Persoana p = new Persoana(nume);
             utilizatori.add(p);
         } else if (tip.equals("entitate juridica")) {
-            String chestie = cuvinte[3].substring(1);
+            String nume = cuvinte[3].substring(1);
+            String chestie = cuvinte[2].substring(1);
             EntitateJuridica e = new EntitateJuridica(nume, chestie);
             utilizatori.add(e);
+        }
+    }
+
+    public static void retrageCerere(String[] cuvinte, ArrayList<Utilizator> utilizatori) {
+        String nume = cuvinte[1].substring(1);
+        String data = cuvinte[2].substring(1);
+        try {
+            Date datavar = stringToDate(data);
+            for (Utilizator util : utilizatori) {
+                if (util.getNume().equals(nume) || util.getReprezentant().equals(nume)) {
+                    ArrayList<CerereCompleta> cererile;
+                    cererile = util.getCereriAsteptare();
+                    Iterator itr = cererile.iterator();
+                    while (itr.hasNext()) {
+                        CerereCompleta c = (CerereCompleta) itr.next();
+                        if (c.getData().equals(datavar)) {
+                            itr.remove();
+                        }
+                    }
+                }
+            }
+        } catch (ParseException e) {
+            System.out.println("Couldn't parse date");
         }
     }
 

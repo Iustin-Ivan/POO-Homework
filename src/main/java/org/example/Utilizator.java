@@ -17,6 +17,7 @@ public abstract class Utilizator {
 
     abstract protected ArrayList<CerereCompleta> getCereriAsteptare();
     abstract protected void setCereriAsteptare(ArrayList<CerereCompleta> cereriAsteptare);
+    abstract protected String getReprezentant();
 
     public String gasesteTipUtilizator() {
         if (this instanceof Angajat) {

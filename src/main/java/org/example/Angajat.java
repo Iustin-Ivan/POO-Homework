@@ -57,4 +57,8 @@ public class Angajat extends Utilizator{
     public void setCereriAsteptare(ArrayList<CerereCompleta> cereriAsteptare) {
         this.cereriAsteptare = cereriAsteptare;
     }
+
+    public String getReprezentant() {
+        return "";
+    }
 }

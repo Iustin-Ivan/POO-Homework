@@ -28,16 +28,14 @@ public class ManagementPrimarie {
                 } else if (cuvinte[0].equals("afiseaza_cereri_in_asteptare")) {
                     String nume = cuvinte[1].substring(1);
                     MetodeAjutatoare.afiseazaCereriAsteptare(utilizatori, nume, fisierIesire);
+                } else if (cuvinte[0].equals("retrage_cerere")) {
+                    MetodeAjutatoare.retrageCerere(cuvinte, utilizatori);
                 }
             }
             myReader.close();
         } catch (IOException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
-        } catch (ParseException e) {
-            System.out.println("Couldn't parse Date");
-        } catch (CerereInvalidaException e) {
-            System.out.println("Cerere invalida");
         }
     }
 }
