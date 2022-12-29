@@ -5,6 +5,16 @@ import java.util.ArrayList;
 public class Angajat extends Utilizator{
 
     private ArrayList<CerereCompleta> cereriAsteptare = new ArrayList<>();
+
+    public ArrayList<CerereCompleta> getCereriSolutionate() {
+        return cereriSolutionate;
+    }
+
+    public void setCereriSolutionate(ArrayList<CerereCompleta> cereriSolutionate) {
+        this.cereriSolutionate = cereriSolutionate;
+    }
+
+    private ArrayList<CerereCompleta> cereriSolutionate = new ArrayList<>();
     private String nume;
 
     private String companie;

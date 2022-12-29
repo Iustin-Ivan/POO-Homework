@@ -2,11 +2,12 @@ package org.example;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class CerereCompleta implements Comparable<CerereCompleta> {
+public class CerereCompleta {
 
     private Date data;
 
     private int prioritate;
+
     private String text;
 
     CerereCompleta(Date data, int prioritate, String text) {
@@ -31,6 +32,14 @@ public class CerereCompleta implements Comparable<CerereCompleta> {
         this.prioritate = prioritate;
     }
 
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
     public String toString() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
         String data = dateFormat.format(this.data);
@@ -38,8 +47,4 @@ public class CerereCompleta implements Comparable<CerereCompleta> {
         return retur;
     }
 
-    @Override
-    public int compareTo(CerereCompleta o) {
-        return this.getData().compareTo(o.getData());
-    }
 }

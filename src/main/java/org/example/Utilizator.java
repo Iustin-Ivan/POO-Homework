@@ -16,6 +16,7 @@ public abstract class Utilizator {
     abstract protected String getNume();
 
     abstract protected ArrayList<CerereCompleta> getCereriAsteptare();
+    abstract protected ArrayList<CerereCompleta> getCereriSolutionate();
     abstract protected void setCereriAsteptare(ArrayList<CerereCompleta> cereriAsteptare);
     abstract protected String getReprezentant();
 

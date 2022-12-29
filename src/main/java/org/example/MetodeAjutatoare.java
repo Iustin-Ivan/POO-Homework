@@ -1,5 +1,4 @@
 package org.example;
-import javax.imageio.IIOException;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -55,7 +54,9 @@ public class MetodeAjutatoare {
         return fisier;
     }
 
-    public static void adaugaCerere(ArrayList<Utilizator> utilizatori, String[] cuvinte, File fisierIesire) {
+
+    public static void adaugaCerere(ArrayList<Utilizator> utilizatori, String[] cuvinte, File fisierIesire,
+                                    Birou a, Birou b, Birou c, Birou d, Birou e) {
         String nume = cuvinte[1].substring(1);
         String cererea = cuvinte[2].substring(1);
         String tipUtilizator = "";
@@ -63,25 +64,36 @@ public class MetodeAjutatoare {
             if (util.getNume().equals(nume) || util.getReprezentant().equals(nume)) {
                 tipUtilizator = util.gasesteTipUtilizator();
                 try {
-                    Utilizator.Cereri a = MetodeAjutatoare.tipCerere(cererea);
-                    String text = util.scrieCerere(a);
+                    Utilizator.Cereri x = MetodeAjutatoare.tipCerere(cererea);
+                    String text = util.scrieCerere(x);
                     Date dataa = MetodeAjutatoare.stringToDate(cuvinte[3].substring(1));
                     int prioritate = Integer.valueOf(cuvinte[4].substring(1));
                     CerereCompleta cerereCompleta = new CerereCompleta(dataa, prioritate, text);
                     ArrayList<CerereCompleta> cereriUtilizatori = util.getCereriAsteptare();
                     cereriUtilizatori.add(cerereCompleta);
                     util.setCereriAsteptare(cereriUtilizatori);
+                    Birou temp = MetodeAjutatoare.careBirou(a, b, c, d, e, tipUtilizator);
+                    ArrayList<CerereCompleta> cereriBirou = temp.getCereriAsteptare();
+                    cereriBirou.add(cerereCompleta);
+                    temp.setCereriAsteptare(cereriBirou);
                     break;
-                } catch (CerereInvalidaException e) {
+                } catch (CerereInvalidaException ex) {
                     String mesajAfisat = "Utilizatorul de tip " + tipUtilizator +
                             " nu poate inainta o cerere de tip " + cererea + "\n";
                     scrieInFisier(fisierIesire, mesajAfisat);
-                    //System.out.println(mesajAfisat);
-                } catch (ParseException e) {
+                } catch (ParseException ex) {
                     System.out.println("Couldn't parse Date");
                 }
             }
         }
+    }
+
+    public static Birou careBirou (Birou a, Birou b, Birou c, Birou d, Birou e, String numeBirou) {
+        if (numeBirou.equals("angajat")) return a;
+        if (numeBirou.equals("persoana")) return b;
+        if (numeBirou.equals("pensionar")) return c;
+        if (numeBirou.equals("entitate juridica")) return d;
+        return e;
     }
 
     public static void afiseazaCereriAsteptare(ArrayList<Utilizator> utilizatori, String nume, File fisierIesire) {
@@ -89,7 +101,8 @@ public class MetodeAjutatoare {
             if(util.getNume().equals(nume) || util.getReprezentant().equals(nume)) {
                 ArrayList<CerereCompleta> cererile;
                 cererile = util.getCereriAsteptare();
-                Collections.sort(cererile);
+                DynamicComparatorCereri comp0 = new DynamicComparatorCereri();
+                Collections.sort(cererile, comp0);
                 String continut;
                 if (util.gasesteTipUtilizator().equals("entitate juridica")) {
                     continut = util.getReprezentant() + " - " + "cereri in asteptare:\n";
@@ -104,6 +117,7 @@ public class MetodeAjutatoare {
             }
         }
     }
+
 
     public static void adaugaUtilizator(ArrayList<Utilizator> utilizatori, String[] cuvinte) {
         String tip = cuvinte[1].substring(1);
@@ -133,28 +147,98 @@ public class MetodeAjutatoare {
         }
     }
 
-    public static void retrageCerere(String[] cuvinte, ArrayList<Utilizator> utilizatori) {
+    public static void retrageCerere(String[] cuvinte, ArrayList<Utilizator> utilizatori, Birou a, Birou b,
+                                     Birou c, Birou d, Birou e) {
+        Birou temp = null;
         String nume = cuvinte[1].substring(1);
         String data = cuvinte[2].substring(1);
         try {
             Date datavar = stringToDate(data);
             for (Utilizator util : utilizatori) {
                 if (util.getNume().equals(nume) || util.getReprezentant().equals(nume)) {
+                    if (util instanceof Angajat) {
+                        temp = a;
+                    } else if (util instanceof Persoana) {
+                        temp = b;
+                    } else if (util instanceof Pensionar) {
+                        temp = c;
+                    } else if (util instanceof EntitateJuridica) {
+                        temp = d;
+                    } else if (util instanceof Elev){
+                        temp = e;
+                    }
                     ArrayList<CerereCompleta> cererile;
                     cererile = util.getCereriAsteptare();
                     Iterator itr = cererile.iterator();
                     while (itr.hasNext()) {
-                        CerereCompleta c = (CerereCompleta) itr.next();
-                        if (c.getData().equals(datavar)) {
+                        CerereCompleta cer = (CerereCompleta) itr.next();
+                        if (cer.getData().equals(datavar)) {
                             itr.remove();
+                            break;
                         }
                     }
+                    util.setCereriAsteptare(cererile);
+
+                    ArrayList<CerereCompleta> cererileBirou;
+                    cererileBirou = temp.getCereriAsteptare();
+                    Iterator iterator = cererileBirou.iterator();
+                    while (iterator.hasNext()) {
+                        CerereCompleta cer = (CerereCompleta) iterator.next();
+                        if (cer.getData().equals(datavar)) {
+                            iterator.remove();
+                            break;
+                        }
+                    }
+                    temp.setCereriAsteptare(cererileBirou);
+                    break;
                 }
             }
-        } catch (ParseException e) {
+        } catch (ParseException ex) {
             System.out.println("Couldn't parse date");
         }
     }
+
+    public static void rezolvaCerere(String numeSolicitant, ArrayList<Utilizator> utilizatori, CerereCompleta cer) {
+        for(Utilizator util : utilizatori) {
+            if (util.getNume().equals(numeSolicitant) || util.getReprezentant().equals(numeSolicitant)) {
+                ArrayList<CerereCompleta> cereriNerezolvate = util.getCereriAsteptare();
+                ArrayList<CerereCompleta> cereriRezolvate = util.getCereriSolutionate();
+                CerereCompleta j = null;
+                for(CerereCompleta i : cereriNerezolvate) {
+                    j = i;
+                    if(i.getData().equals(cer.getData())) {
+                        break;
+                    }
+                }
+                cereriRezolvate.add(j);
+                cereriNerezolvate.remove(j);
+            }
+        }
+    }
+
+
+    public static void afiseazaCereriFinalizate(String numeSolicitant, ArrayList<Utilizator> utilizatori, File fisierIesire) {
+        for(Utilizator util : utilizatori) {
+            if (util.getNume().equals(numeSolicitant) || util.getReprezentant().equals(numeSolicitant)) {
+                ArrayList<CerereCompleta> cererile;
+                cererile = util.getCereriSolutionate();
+                DynamicComparatorCereri comp0 = new DynamicComparatorCereri();
+                Collections.sort(cererile, comp0);
+                String continut;
+                if (util.gasesteTipUtilizator().equals("entitate juridica")) {
+                    continut = util.getReprezentant() + " - " + "cereri in finalizate:\n";
+                } else {
+                    continut = util.getNume() + " - " + "cereri in finalizate:\n";
+                }
+
+                for (int i = 0; i < cererile.size(); i++) {
+                    continut += cererile.get(i).toString()+"\n";
+                }
+                scrieInFisier(fisierIesire, continut);
+            }
+        }
+    }
+
 
     public static void scrieInFisier(File fisierIesire, String mesaj) {
         try {
