@@ -1,13 +1,7 @@
 package org.example;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
 import java.util.Scanner;
 
 public class ManagementPrimarie {
@@ -16,9 +10,9 @@ public class ManagementPrimarie {
         ArrayList<Functionar> functionari = new ArrayList<>();
         ArrayList<File> fisiereFunctionari = new ArrayList<>();
         try {
-            MetodeAjutatoare.deleteAllFilesWithSpecificExtension("src/main/resources/output/","txt");
-            File fisierIntrare = MetodeAjutatoare.createFile("src/main/resources/input/"+args[0]);
-            File fisierIesire = MetodeAjutatoare.createFile("src/main/resources/output/"+args[0]);
+            MetodeAjutatoare.stergeToateFisiereleCuExtensia("src/main/resources/output/","txt");
+            File fisierIntrare = MetodeAjutatoare.creeazaFisier("src/main/resources/input/"+args[0]);
+            File fisierIesire = MetodeAjutatoare.creeazaFisier("src/main/resources/output/"+args[0]);
             Scanner myReader = new Scanner(fisierIntrare);
             Birou birouAngajati = new Birou(Birou.tipuri.angajati);
             Birou birouPensionari = new Birou(Birou.tipuri.pensionari);
@@ -51,7 +45,7 @@ public class ManagementPrimarie {
                     String numeFunctionar = cuvinte[2].substring(1);
                     Functionar functionar = new Functionar(temp.getTipBirou(), numeFunctionar);
                     String[] nr = args[0].split("_");
-                    File fisierFunctionar = MetodeAjutatoare.createFile("src/main/resources/output/"
+                    File fisierFunctionar = MetodeAjutatoare.creeazaFisier("src/main/resources/output/"
                     +"functionar_"+numeFunctionar+".txt");
                     functionari.add(functionar);
                     fisiereFunctionari.add(fisierFunctionar);

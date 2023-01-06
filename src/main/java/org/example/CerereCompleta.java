@@ -40,6 +40,7 @@ public class CerereCompleta {
         this.text = text;
     }
 
+    @Override
     public String toString() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
         String data = dateFormat.format(this.data);

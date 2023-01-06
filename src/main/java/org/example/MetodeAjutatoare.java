@@ -27,13 +27,13 @@ public class MetodeAjutatoare {
         return Utilizator.Cereri.inregistrare_cupoane_de_pensie;
     }
 
-    public static Date stringToDate(String data) throws ParseException {
+    public static Date dinStringInData(String data) throws ParseException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
         Date date = dateFormat.parse(data);
         return date;
     }
 
-    public static boolean deleteAllFilesWithSpecificExtension(String pathToDir, String extension) {
+    public static boolean stergeToateFisiereleCuExtensia(String pathToDir, String extension) {
         boolean success = false;
         File folder = new File(pathToDir);
         File[] fList = folder.listFiles();
@@ -46,11 +46,8 @@ public class MetodeAjutatoare {
         return success;
     }
 
-    public static File createFile(String nume) throws IOException {
+    public static File creeazaFisier(String nume) throws IOException {
         File fisier = new File(nume);
-        if (nume.contains("output")) {
-            fisier.createNewFile();
-        }
         return fisier;
     }
 
@@ -66,7 +63,7 @@ public class MetodeAjutatoare {
                 try {
                     Utilizator.Cereri x = MetodeAjutatoare.tipCerere(cererea);
                     String text = util.scrieCerere(x);
-                    Date dataa = MetodeAjutatoare.stringToDate(cuvinte[3].substring(1));
+                    Date dataa = MetodeAjutatoare.dinStringInData(cuvinte[3].substring(1));
                     int prioritate = Integer.valueOf(cuvinte[4].substring(1));
                     CerereCompleta cerereCompleta = new CerereCompleta(dataa, prioritate, text);
                     ArrayList<CerereCompleta> cereriUtilizatori = util.getCereriAsteptare();
@@ -153,7 +150,7 @@ public class MetodeAjutatoare {
         String nume = cuvinte[1].substring(1);
         String data = cuvinte[2].substring(1);
         try {
-            Date datavar = stringToDate(data);
+            Date datavar = dinStringInData(data);
             for (Utilizator util : utilizatori) {
                 if (util.getNume().equals(nume) || util.getReprezentant().equals(nume)) {
                     if (util instanceof Angajat) {
