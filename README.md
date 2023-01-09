@@ -7,3 +7,5 @@ Pentru sortarea cererilor la afisare am implementat interfata Comparator deoarec
 am folosit Comparator pentru a putea selecta dinamic metoda pe care vreau sa o folosesc
 Atat birourile cat si utilizatorii stocheaza o lista cu cereri iar cand o cerere e creata, aceasta e adaugata in ambele.
 Utilizatorii mai contin si o lista cu cererile solutionate. Fiecare dintre acestea e folosita in functie de comanda primita.
+Acum dupa labul 11 cu Colectii realizez ca un PriorityQueue ar fi fost mai bun pentru rezolvarea cererilor si sa nu fac toata tema
+cu ArrayList dar deja e prea tarziu sa mai reconstruiesc tema, asa ca varianta cu DynamicComparator ramane
